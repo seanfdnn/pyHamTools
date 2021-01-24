@@ -9,6 +9,7 @@ license = "GPLv3"
 python = "^3.7"
 telnetlib3 = "^1.0.3"
 asyncio = "^3.4.3"
+rich = "^9.9.0"
 
 [tool.poetry.dev-dependencies]
 
