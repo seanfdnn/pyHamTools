@@ -1,9 +1,0 @@
-#!/usr/bin/expect
-
-set timeout 20
-spawn telnet telnet.reversebeacon.net 7000 
-
-expect "Please enter your call:" 
-send "va3zza\r\n"
-
-interact

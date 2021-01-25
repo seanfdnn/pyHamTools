@@ -1,22 +1,21 @@
+from . import listen_forever
 import argparse
 import sys
 
 # Load rich console
-from rich.traceback import install
 from rich.logging import RichHandler
 import logging
-install()
 logging.basicConfig(
-    level="NOTSET", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
+    level=logging.WARNING, format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
 )
 
-from . import listen_forever
 
 def main() -> int:
 
     ap = argparse.ArgumentParser(
         prog="rbn", description="CLI frontend to the Reverse Beacon Network")
-    ap.add_argument("-c", "--callsign", help="Your callsign", type=str, required=True)
+    ap.add_argument("-c", "--callsign", help="Your callsign",
+                    type=str, required=True)
     ap.add_argument("-b", "--bands", action="append", help="Band to filter by (this can be passed multiple times)", choices=[
         "630m",
         "160m",
@@ -37,11 +36,11 @@ def main() -> int:
         "cw", "rtty", "psk31", "psk63", "ft8", "ft4"
     ])
     args = ap.parse_args()
-    
+
     # Build callback method
-    def callback(spotter: str, spotted: str, frequency: float, mode: str, snr: int, message: str, time: str):
+    def callback(spotter: str, spotted: str, frequency: float, mode: str, strength: int, time: str):
         print(f"{spotter} -> {spotted}")
-        
+
     # Begin loop
     listen_forever(args.callsign, callback)
 
