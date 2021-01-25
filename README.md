@@ -1,4 +1,4 @@
-# Reverse Beacon Network client for Python
+# Reverse Beacon Network client for Python ![Poetry Build Suite](https://github.com/Ewpratten/pyRBN/workflows/Poetry%20Build%20Suite/badge.svg)
 
 This is both a library and cli tool, under the package `rbn`
 
