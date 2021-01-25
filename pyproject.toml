@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A Python library for consuming data from the Reverse Beacon Network in real time"
 authors = ["Evan Pratten <ewpratten@gmail.com>"]
 license = "GPLv3"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"
