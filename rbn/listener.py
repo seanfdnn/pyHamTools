@@ -1,12 +1,29 @@
 import asyncio
 import telnetlib3
 from .logging import RBN_LOGGER
+from .telnet import telnet_handler
 from typing import Callable
+import curses
 
-from .telnet import telnet_handler, TelnetReaderUnicode, TelnetWriterUnicode
+
+async def print_screen(queue, stdscr):
+    while True:
+        # Clear and refresh the screen for a blank canvas
+        stdscr.clear()
+        for idx, spot in enumerate(sorted(queue.values(), key=lambda x: x.age())):
+            if idx < curses.LINES:
+                stdscr.move(idx, 0)
+                stdscr.addstr(str(spot), curses.A_REVERSE)
+        stdscr.refresh()
+        await asyncio.sleep(1)
 
 
-def listen_forever(callsign: str, callback: Callable[[str, str, float, str, int, str], None]) -> asyncio.AbstractEventLoop:
+def listen_forever(
+    callsign: str,
+    callback: Callable[[str, str, float, str, int, str], None],
+    queue,
+    stdscr,
+) -> asyncio.AbstractEventLoop:
     """Begin listening for events coming in from the Reverse Beacon Network
 
     Args:
@@ -20,14 +37,15 @@ def listen_forever(callsign: str, callback: Callable[[str, str, float, str, int,
     # Coroutines for each Telnet server
     RBN_LOGGER.debug("Opening telnet connections")
     cw_coro = telnetlib3.open_connection(
-        'telnet.reversebeacon.net', 7000, shell=lambda r, w: telnet_handler(r, w, callsign, callback))
-    ft8_coro = telnetlib3.open_connection(
-        'telnet.reversebeacon.net', 7001, shell=lambda r, w: telnet_handler(r, w, callsign, callback))
+        "telnet.reversebeacon.net",
+        7000,
+        shell=lambda r, w: telnet_handler(r, w, callsign, callback),
+    )
 
     # Register with the event loop
     RBN_LOGGER.debug("Begining event loop")
     reader, writer = loop.run_until_complete(cw_coro)
-    reader, writer = loop.run_until_complete(ft8_coro)
+    loop.run_until_complete(print_screen(queue, stdscr))
     loop.run_until_complete(writer.protocol.waiter_closed)
 
     return loop

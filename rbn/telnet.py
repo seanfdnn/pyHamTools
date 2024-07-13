@@ -1,8 +1,11 @@
 import asyncio
+from datetime import datetime, timezone
 from typing import List, Callable
 import re
 from telnetlib3.stream_reader import TelnetReaderUnicode
 from telnetlib3.stream_writer import TelnetWriterUnicode
+
+from .models import Callsign, Spot
 
 from .logging import RBN_LOGGER
 
@@ -14,8 +17,12 @@ from .logging import RBN_LOGGER
 BLANKET_EXPRESSION = r"^DX de ([A-Z\d\-\/]*)-#:\s+([\d.]*)\s+([A-Z\d\-\/]*)\s+([A-Z\d]*)\s+(\d*) dB.*\s+(\d{4}Z)"
 
 
-@asyncio.coroutine
-def telnet_handler(reader: TelnetReaderUnicode, writer: TelnetWriterUnicode, username: str, callback: Callable[[str, str, float, str, int, str], None]) -> None:
+async def telnet_handler(
+    reader: TelnetReaderUnicode,
+    writer: TelnetWriterUnicode,
+    username: str,
+    callback: Callable[[str, str, float, str, int, str], None],
+) -> None:
     """Handler function for every telnet packet the comes from RBN
 
     Args:
@@ -29,7 +36,7 @@ def telnet_handler(reader: TelnetReaderUnicode, writer: TelnetWriterUnicode, use
     while True:
 
         # Read stream
-        stream = yield from reader.read(4096)
+        stream = await reader.read(4096)
 
         # If no stream, no data
         if not stream:
@@ -69,9 +76,16 @@ def telnet_handler(reader: TelnetReaderUnicode, writer: TelnetWriterUnicode, use
             strength: int = int(parsed[0][4])
             time: str = parsed[0][5]
 
+            # Todo: parse this from the time string, which doesn't have the UTC day
+            time = datetime.now(timezone.utc)
+
+            spot = Spot(
+                Callsign(spotter), Callsign(spotted), frequency, mode, strength, time
+            )
+
             # Call the callback
             if callback:
                 RBN_LOGGER.debug(f"Calling callback")
-                callback(spotter, spotted, frequency, mode, strength, time)
+                await callback(spot)
             else:
                 RBN_LOGGER.debug(f"No callback to call")
