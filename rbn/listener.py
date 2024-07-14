@@ -15,7 +15,7 @@ async def print_screen(queue, stdscr):
                 stdscr.move(idx, 0)
                 stdscr.addstr(str(spot))
         stdscr.refresh()
-        await asyncio.sleep(3)
+        await asyncio.sleep(1)
 
 
 def listen_forever(

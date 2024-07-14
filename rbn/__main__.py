@@ -18,6 +18,8 @@ logging.basicConfig(
 
 
 def is_freq_in_one_of_bands(freq, bands) -> bool:
+    if not bands:
+        return True
     for band in bands:
         if freq > band_mapping[band][0] and freq < band_mapping[band][1]:
             return True
@@ -90,7 +92,7 @@ def main(stdscr) -> int:
         if not is_freq_in_one_of_bands(spot.frequency, args.band):
             return
 
-        if not spot.spotter.hasprefix("VE6"):
+        if not spot.spotter.hasprefix("VE6AO"):
             return
 
         spot_queue[spot.spotted] = spot
@@ -100,6 +102,11 @@ def main(stdscr) -> int:
     listen_forever(args.callsign, callback, spot_queue, stdscr)
 
 
+def parse_dxcc():
+    from . import dxcc_parser
+
+
 if __name__ == "__main__":
+    # parse_dxcc()
 
     sys.exit(curses.wrapper(main))

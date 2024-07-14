@@ -67,6 +67,17 @@ files = [
 windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
+name = "qrzlib"
+version = "0.3.0"
+description = "API to access data from qrz.com."
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "qrzlib-0.3.0-py3-none-any.whl", hash = "sha256:530739cb0a29cddf3133454aa7967aeb84810b5d6f09b2600eacaa3a9da1e72e"},
+    {file = "qrzlib-0.3.0.tar.gz", hash = "sha256:265b1796e27ca5a133e2f90e4dcc43d1a0f86b64f6ae66992bff09f12e98f803"},
+]
+
+[[package]]
 name = "rich"
 version = "9.13.0"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
@@ -122,4 +133,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.1"
-content-hash = "d21c78fafbace33d64fc848b6d7ec294caeac41ed7e5593b54fd1337d37d309e"
+content-hash = "a5b39a2aa26a4523facc9ba7b72d800b16f2fd88b0f7b6610fb73e90d15c96b5"
