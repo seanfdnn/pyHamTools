@@ -13,9 +13,9 @@ async def print_screen(queue, stdscr):
         for idx, spot in enumerate(sorted(queue.values(), key=lambda x: x.age())):
             if idx < curses.LINES:
                 stdscr.move(idx, 0)
-                stdscr.addstr(str(spot), curses.A_REVERSE)
+                stdscr.addstr(str(spot))
         stdscr.refresh()
-        await asyncio.sleep(1)
+        await asyncio.sleep(3)
 
 
 def listen_forever(

@@ -17,6 +17,13 @@ logging.basicConfig(
 )
 
 
+def is_freq_in_one_of_bands(freq, bands) -> bool:
+    for band in bands:
+        if freq > band_mapping[band][0] and freq < band_mapping[band][1]:
+            return True
+    return False
+
+
 def main(stdscr) -> int:
 
     ap = argparse.ArgumentParser(
@@ -80,15 +87,10 @@ def main(stdscr) -> int:
             else:
                 return
 
-        # Filter out any unwanted bands
-        if args.band:
-            if (
-                spot.frequency < band_mapping[args.band][0]
-                or spot.frequency > band_mapping[args.band][1]
-            ):
-                return
+        if not is_freq_in_one_of_bands(spot.frequency, args.band):
+            return
 
-        if not (spot.spotter.hasprefix("VE6") or spot.spotted.hasprefix("VE6")):
+        if not spot.spotter.hasprefix("VE6"):
             return
 
         spot_queue[spot.spotted] = spot
