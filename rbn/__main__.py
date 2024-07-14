@@ -61,12 +61,18 @@ def main(stdscr) -> int:
         help="Mode to filter by (this can be passed multiple times)",
         choices=["cw", "rtty", "psk31", "psk63", "ft8", "ft4"],
     )
+
     ap.add_argument(
         "-f",
         "--filter-call",
         action="append",
-        help="Callign to filter by (this can be passed multiple times)",
+        help="Callsign to filter by (this can be passed multiple times)",
     )
+
+    ap.add_argument("-m", "--min-snr", help="Minimum SNR in dB", type=int)
+
+    ap.add_argument("-w", "--max-wpm", help="Maximum Words per Minute", type=int)
+
     args = ap.parse_args()
 
     spot_queue = ExpiringDict(max_len=4096, max_age_seconds=60 * 15)
@@ -82,17 +88,12 @@ def main(stdscr) -> int:
         # Filter out any unwanted callsigns
         if args.filter_call:
             for call in args.filter_call:
-                call: str = call.upper()
-
-                if call == spot.spotter.upper() or call == spot.spotted.upper():
+                if call == spot.spotter or call == spot.spotted:
                     break
             else:
                 return
 
         if not is_freq_in_one_of_bands(spot.frequency, args.band):
-            return
-
-        if not spot.spotter.hasprefix("VE6AO"):
             return
 
         spot_queue[spot.spotted] = spot

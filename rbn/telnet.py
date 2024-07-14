@@ -14,7 +14,7 @@ from .logging import RBN_LOGGER
 # telnet.reversebeacon.net:7001 (FT8, FT4, ...
 
 # REGEX rule that covers all data from RBN
-BLANKET_EXPRESSION = r"^DX de ([A-Z\d\-\/]*)-#:\s+([\d.]*)\s+([A-Z\d\-\/]*)\s+([A-Z\d]*)\s+(\d*) dB.*\s+(\d{4}Z)"
+BLANKET_EXPRESSION = r"^DX de ([A-Z\d\-\/]*)-#:\s+([\d.]*)\s+([A-Z\d\-\/]*)\s+([A-Z\d]*)\s+(\d*) dB\s+(\d*) WPM.*\s+(\d{4}Z)"
 
 
 async def telnet_handler(
@@ -74,13 +74,20 @@ async def telnet_handler(
             spotted: str = parsed[0][2]
             mode: str = parsed[0][3]
             strength: int = int(parsed[0][4])
-            time: str = parsed[0][5]
+            wpm: int = int(parsed[0][5])
+            time: str = parsed[0][6]
 
             # Todo: parse this from the time string, which doesn't have the UTC day
             time = datetime.now(timezone.utc)
 
             spot = Spot(
-                Callsign(spotter), Callsign(spotted), frequency, mode, strength, time
+                Callsign(spotter),
+                Callsign(spotted),
+                frequency,
+                mode,
+                strength,
+                wpm,
+                time,
             )
 
             # Call the callback

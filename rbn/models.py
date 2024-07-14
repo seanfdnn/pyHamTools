@@ -40,6 +40,8 @@ class Callsign:
         return hash(self.callsign_str)
 
     def __eq__(self, value: object) -> bool:
+        if type(value) == str:
+            return value.upper() == self.callsign_str
         return value.callsign_str == self.callsign_str
 
     def __repr__(self) -> str:
@@ -77,10 +79,11 @@ class Spot:
     frequency: float
     mode: str
     strength: int
+    wpm: int
     time: datetime
 
     def age(self) -> timedelta:
         return datetime.now(timezone.utc) - self.time
 
     def __str__(self):
-        return f"{printProgressBar(self.strength, total=30, length=15)} {str(self.spotted).ljust(8)} {self.spotted.country_code} {timeago.format(self.time, datetime.now(timezone.utc)).ljust(14)} on {self.frequency} {self.spotted.owner_name} "
+        return f"{printProgressBar(self.strength, total=30, length=15)} {str(self.spotted).ljust(8)} {self.spotted.country_code} {timeago.format(self.time, datetime.now(timezone.utc)).ljust(14)} {self.wpm} WPM on {self.frequency} {self.spotted.owner_name} "

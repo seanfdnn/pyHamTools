@@ -4,15 +4,19 @@ from .logging import RBN_LOGGER
 from .telnet import telnet_handler
 from typing import Callable
 import curses
+from datetime import datetime, timezone
 
 
 async def print_screen(queue, stdscr):
     while True:
         # Clear and refresh the screen for a blank canvas
         stdscr.clear()
+        stdscr.move(0, 0)
+        stdscr.addstr(datetime.now(timezone.utc).strftime("%H:%MZ %Y-%b-%d"))
+
         for idx, spot in enumerate(sorted(queue.values(), key=lambda x: x.age())):
-            if idx < curses.LINES:
-                stdscr.move(idx, 0)
+            if idx < curses.LINES - 1:
+                stdscr.move(idx + 1, 0)
                 stdscr.addstr(str(spot))
         stdscr.refresh()
         await asyncio.sleep(1)
