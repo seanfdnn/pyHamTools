@@ -69,7 +69,7 @@ def main(stdscr) -> int:
         help="Callsign to filter by (this can be passed multiple times)",
     )
 
-    ap.add_argument("-m", "--min-snr", help="Minimum SNR in dB", type=int)
+    ap.add_argument("-s", "--min-snr", help="Minimum SNR in dB", type=int)
 
     ap.add_argument("-w", "--max-wpm", help="Maximum Words per Minute", type=int)
 

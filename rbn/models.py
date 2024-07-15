@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import timeago
 from . import dxcc_parser
-from . import qrz
 
 
 # Print iterations progress
